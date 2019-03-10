@@ -11,7 +11,7 @@ namespace App\Feeds;
 use Illuminate\Support\Arr;
 use SimplePie;
 
-class Feeds
+class FeedsClass
 {
     /**
      * The config.

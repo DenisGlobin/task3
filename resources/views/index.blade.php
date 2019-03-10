@@ -17,15 +17,13 @@
             <h1>Новости</h1>
         </div>
 
-        <div class="header">
-            <h1><a href="{{ $permalink }}">{{ $title }}</a></h1>
-        </div>
+
 
         @foreach ($items as $item)
             <div class="item">
-                <h2><a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></h2>
-                <p>{{ $item->get_description() }}</p>
-                <p><small>Posted on {{ $item->get_date('j F Y | g:i a') }}</small></p>
+                <h2><a href="{{ url('news') . '/' . $item->id }}">{{ $item->title }}</a></h2>
+                <p>{{ $item->description }}</p>
+                <p><small>Опубликовано: {{ $item->posted_at }}</small></p>
             </div>
         @endforeach
     </div>

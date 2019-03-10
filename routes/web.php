@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'FeedsController@index');
+Route::get('news/{id}', 'FeedsController@showNews')->where(['id' => '[0-9]+'])->name('news');
