@@ -11,5 +11,6 @@
 |
 */
 
-Route::get('/', 'FeedsController@index');
-Route::get('news/{id}', 'FeedsController@showNews')->where(['id' => '[0-9]+'])->name('news');
+Route::redirect('/', '/p=0');
+Route::get('/p={n}', 'FeedsController@index')->where(['n' => '[0-9]+'])->name('/');
+Route::get('news/{id}', 'FeedsController@showNews')->where(['id' => '[0-9a-z]+'])->name('news');

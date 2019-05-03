@@ -53,6 +53,9 @@ class FeedsClass
             $this->simplePie->force_feed(true);
         }
 
+        $this->simplePie->enable_cache(true);
+        $this->simplePie->set_cache_location('mysql://homestead:secret@phpmyadmin.app/task3');
+
         $stripHtmlTags = Arr::get($this->config, 'strip_html_tags.disabled', false);
 
         if (! $stripHtmlTags && ! empty($this->config['strip_html_tags.tags']) && is_array($this->config['strip_html_tags.tags'])) {

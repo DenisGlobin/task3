@@ -13,18 +13,15 @@
 
 <div class="container-fluid">
 
-    @foreach ($items as $item)
     <div class="text-center">
         <h1>{{ $item->get_title() }}</h1>
     </div>
 
-
     <div class="item">
-        <p>{{ $item->get_content() }}</p>
+        <p>{!! $item->get_content() !!}</p>
         <p>Оригинал статьи <a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></p>
-        <p><small>Posted on {{ $item->get_date('j F Y | g:i a') }}</small></p>
+        <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
     </div>
-    @endforeach
 
 </div>
 

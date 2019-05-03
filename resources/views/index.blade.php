@@ -17,15 +17,53 @@
             <h1>Новости</h1>
         </div>
 
-
-
         @foreach ($items as $item)
             <div class="item">
-                <h2><a href="{{ url('news') . '/' . $item->id }}">{{ $item->title }}</a></h2>
-                <p>{{ $item->description }}</p>
-                <p><small>Опубликовано: {{ $item->posted_at }}</small></p>
+                <h2><a href="{{ url('news') . '/' . $item->get_id(true) }}">{{ $item->get_title() }}</a></h2>
+                <p>{!! $item->get_description() !!}</p>
+                <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
             </div>
         @endforeach
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                @if($page == 0)
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                @elseif ($page > 0)
+                    <?php $previos = (int) $page - 1; ?>
+                    <li class="page-item">
+                        <a class="page-link" href="{!! url('/p=') . $previos !!}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                @endif
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                @if($page == $feedsCount)
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                @elseif ($page < $feedsCount)
+                    <?php $next = (int) $page + 1; ?>
+                    <li class="page-item">
+                        <a class="page-link" href="{!! url('/p=') . $next !!}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </nav>
     </div>
 
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
