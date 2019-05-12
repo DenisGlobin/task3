@@ -27,7 +27,7 @@
 
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-                @if($page == 0)
+                @if ($page == 0)
                     <li class="page-item disabled">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
@@ -43,10 +43,32 @@
                         </a>
                     </li>
                 @endif
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                @if($page == $feedsCount)
+
+                <?php
+                    $uperPageBar = $page + 3;
+                    $difference = $feedsCount - $page;
+                    if ($difference < 3) {
+                        $uperPageBar = $difference;
+                    }
+                    $lowerPageBar = 0;
+                    $difference = $page - 3;
+                    if ($difference > 0) {
+                        $lowerPageBar = $difference;
+                    }
+                ?>
+                @for ($i = $lowerPageBar; $i <= $uperPageBar; $i++)
+                    @if ($i == $page)
+                        <li class="page-item disabled">
+                            <a class="page-link" href="{!! url('/p=') . $i !!}">{!! $i + 1 !!}</a>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link" href="{!! url('/p=') . $i !!}">{!! $i + 1 !!}</a>
+                        </li>
+                    @endif
+                @endfor
+
+                @if ($page == $feedsCount)
                     <li class="page-item disabled">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>

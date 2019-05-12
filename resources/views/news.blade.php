@@ -11,19 +11,19 @@
 </head>
 <body>
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <div class="text-center">
-        <h1>{{ $item->get_title() }}</h1>
+        <div class="text-center">
+            <h1>{{ $item->get_title() }}</h1>
+        </div>
+
+        <div class="item">
+            <p>{!! $item->get_content() !!}</p>
+            <p><small>Оригинал статьи <a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></small></p>
+            <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
+        </div>
+
     </div>
-
-    <div class="item">
-        <p>{!! $item->get_content() !!}</p>
-        <p>Оригинал статьи <a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></p>
-        <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
-    </div>
-
-</div>
 
 </body>
 </html>
