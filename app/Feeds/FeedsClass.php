@@ -11,6 +11,8 @@ namespace App\Feeds;
 use Illuminate\Support\Arr;
 use SimplePie;
 
+require_once(dirname(__FILE__) . "/MySimplePie_Cache.php");
+
 class FeedsClass
 {
     /**
@@ -52,9 +54,6 @@ class FeedsClass
         if ($forceFeed === true) {
             $this->simplePie->force_feed(true);
         }
-
-        $this->simplePie->enable_cache(true);
-        $this->simplePie->set_cache_location('mysql://homestead:secret@phpmyadmin.app/task3');
 
         $stripHtmlTags = Arr::get($this->config, 'strip_html_tags.disabled', false);
 
@@ -109,7 +108,9 @@ class FeedsClass
         if ($this->config['cache.disabled']) {
             $this->simplePie->enable_cache(false);
         } else {
-            $this->simplePie->set_cache_location($this->config['cache.location']);
+            $this->simplePie->set_cache_location('mysql://homestead:secret@phpmyadmin.test/task3');
+
+            $this->simplePie->set_cache_class('MySimplePie_Cache');
             $this->simplePie->set_cache_duration($this->config['cache.life']);
         }
 
