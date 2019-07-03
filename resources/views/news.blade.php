@@ -19,10 +19,25 @@
 
         <div class="item">
             <p>{!! $item->get_content() !!}</p>
-            <p><small>Оригинал статьи <a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></small></p>
-            <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
+            <strong>Оригинал статьи <a href="{{ $item->get_permalink() }}">{{ $item->get_title() }}</a></strong>
+            <div class="row">
+                <div class="col">
+                    <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
+                </div>
+                <div class="col">
+                    <p style="text-align: right"><small>Просмотров: {{ $visited }}</small></p>
+                </div>
+            </div>
         </div>
-
+    </div>
+    <div class="content">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <a href="{!! url('/p=0') !!}">
+                    <button type="button" class="btn btn-outline-primary">На главную</button>
+                </a>
+            </div>
+        </div>
     </div>
 
 </body>

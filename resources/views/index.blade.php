@@ -17,13 +17,22 @@
             <h1>Новости</h1>
         </div>
 
-        @foreach ($items as $item)
+        @foreach ($items as $item => $massive)
             <div class="item">
-                <h2><a href="{{ url('news') . '/' . $item->get_id(true) }}">{{ $item->get_title() }}</a></h2>
-                <p>{!! $item->get_description() !!}</p>
-                <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
+                <h2><a href="{{ url('news') . '/' . $massive['id'] }}">{{ $massive['title'] }}</a></h2>
+                <p>{!! $massive['descr'] !!}</p>
+                <div class="row">
+                    <div class="col">
+                        <p><small>Опубликовано: {{ $massive['date'] }}</small></p>
+                    </div>
+                    <div class="col">
+                        <p style="text-align: right"><small>Просмотров: {{ $massive['visited'] }}</small></p>
+                    </div>
+                </div>
             </div>
         @endforeach
+
+
 
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">

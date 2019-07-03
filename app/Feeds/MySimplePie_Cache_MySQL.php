@@ -442,13 +442,42 @@ class MySimplePie_Cache_MySQL extends SimplePie_Cache_DB
     }
 
     /**
-     * Reader count
+     * Increase reader count
      *
+     * @param $newsId
+     * @param int $viewed
      * @return bool Success status
      */
-    public function visit()
+    public function countNewReader($newsId, int $viewed)
     {
-        // TODO: save information about the number of users who read the news
-        return true;
+        $query = $this->mysql->prepare('UPDATE `' . $this->options['extras']['prefix'] . 'items` SET `visited` = :visited WHERE `id` = :id');
+        $query->bindValue(':visited', $viewed + 1);
+        $query->bindValue(':id', $newsId);
+        if ($query->execute())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get read count
+     *
+     * @param $newsId
+     * @return int Count of readers
+     */
+    public function getReaderCount(string $newsId)
+    {
+        $sql = 'SELECT `visited` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `id` = :id LIMIT 1';
+
+        $query = $this->mysql->prepare($sql);
+        $query->bindValue(':id', $newsId);
+
+        if ($query->execute() && ($row = $query->fetch()))
+        {
+            return (int) $row[0];
+        }
+        return 0;
     }
 }

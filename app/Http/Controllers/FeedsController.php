@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Feeds\FeedsClass as FeedsClass;
 
 class FeedsController extends Controller
@@ -19,31 +18,64 @@ class FeedsController extends Controller
         ]);
     }
 
-    public function index($page = 0)
+    /**
+     * Get the news list
+     *
+     * @param int $page
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index(int $page = 0)
     {
         $itemPerPage = 5;
         $itemQuantity = $this->simplePie->get_item_quantity();
         $items = $this->simplePie->get_items($page, $itemPerPage);
+        $newsData = array();
+        foreach ($items as $item) {
+            $hashID = $item->get_id(true);
+            $newsData[$hashID]['id'] = $hashID;
+            $newsData[$hashID]['title'] = $item->get_title();
+            $newsData[$hashID]['descr'] = $item->get_description();
+            $newsData[$hashID]['date'] = $item->get_date('j F Y | g:i a');
+            $mySqlCache = new \MySimplePie_Cache_MySQL($this->simplePie->cache_location, $hashID, 'spc');
+            $newsData[$hashID]['visited'] = $mySqlCache->getReaderCount($item->get_id());
+        }
         $data = [
-            'items' => $items,
+            'items' => $newsData,
             'page' => $page,
             'feedsCount' => $itemQuantity,
         ];
         return view('index', $data);
     }
 
-    public function showNews($feedId)
+    /**
+     * Get the news
+     *
+     * @param string $feedId
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function showNews(string $feedId)
     {
         $items = $this->simplePie->get_items();
         foreach ($items as $item) {
             if ($item->get_id(true) == $feedId) {
-                return view('news', ['item' => $item]);
+                $id = $item->get_id();
+                $mySqlCache = new \MySimplePie_Cache_MySQL($this->simplePie->cache_location, $feedId, 'spc');
+                $visited = $mySqlCache->getReaderCount($id);
+                $visited++;
+                $mySqlCache->countNewReader($id, $visited);
+                return view('news', ['item' => $item, 'visited' => $visited]);
             }
         }
-
         return redirect()->route('/');
     }
 
+    /**
+     * Parsing feed from url
+     *
+     * @param array $feedUrl
+     * @param int $limit
+     * @return \SimplePie
+     */
     private function parsingFeeds($feedUrl = [], $limit = 0)
     {
         $config = config('feeds');
