@@ -17,16 +17,16 @@
             <h1>Новости</h1>
         </div>
 
-        @foreach ($items as $item => $massive)
+        @foreach ($items as $item)
             <div class="item">
-                <h2><a href="{{ url('news') . '/' . $massive['id'] }}">{{ $massive['title'] }}</a></h2>
-                <p>{!! $massive['descr'] !!}</p>
+                <h2><a href="{{ url('news') . '/' . $item->get_id(true) }}">{{ $item->get_title() }}</a></h2>
+                <p>{!! $item->get_description() !!}</p>
                 <div class="row">
                     <div class="col">
-                        <p><small>Опубликовано: {{ $massive['date'] }}</small></p>
+                        <p><small>Опубликовано: {{ $item->get_date('j F Y | g:i a') }}</small></p>
                     </div>
                     <div class="col">
-                        <p style="text-align: right"><small>Просмотров: {{ $massive['visited'] }}</small></p>
+                        <p style="text-align: right"><small>Просмотров: {{ $item->get_readers_count() }}</small></p>
                     </div>
                 </div>
             </div>
@@ -34,8 +34,9 @@
 
 
 
-        <nav aria-label="Page navigation example">
+        <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
+                <!-- Previous button -->
                 @if ($page == 0)
                     <li class="page-item disabled">
                         <a class="page-link" href="#" aria-label="Previous">
@@ -53,6 +54,7 @@
                     </li>
                 @endif
 
+                <!-- Numeric button -->
                 <?php
                     $uperPageBar = $page + 3;
                     $difference = $feedsCount - $page;
@@ -77,6 +79,7 @@
                     @endif
                 @endfor
 
+                <!-- Next button -->
                 @if ($page == $feedsCount)
                     <li class="page-item disabled">
                         <a class="page-link" href="#" aria-label="Next">

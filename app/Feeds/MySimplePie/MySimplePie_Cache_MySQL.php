@@ -354,7 +354,7 @@ class MySimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
                 if ($feed !== null)
                 {
-                    $sql = 'SELECT `data` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `feed_id` = :feed ORDER BY `posted` DESC';
+                    $sql = 'SELECT `data`, `visited` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `feed_id` = :feed ORDER BY `posted` DESC';
                     if ($items > 0)
                     {
                         $sql .= ' LIMIT ' . $items;
@@ -362,11 +362,17 @@ class MySimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
                     $query = $this->mysql->prepare($sql);
                     $query->bindValue(':feed', $this->id);
-                    if ($query->execute())
-                    {
-                        while ($row = $query->fetchColumn())
-                        {
-                            $feed['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['entry'][] = unserialize($row);
+                    if ($query->execute()) {
+//                        while ($row = $query->fetchColumn())
+//                        {
+//                            $feed['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['entry'][] = unserialize($row);
+//                        }
+
+                        $item = 0;
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                            $feed['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['entry'][] = unserialize($row['data']);
+                            $feed['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['entry'][$item]['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['visited'] = $row['visited'];
+                            $item++;
                         }
                     }
                     else
@@ -448,7 +454,7 @@ class MySimplePie_Cache_MySQL extends SimplePie_Cache_DB
      * @param int $viewed
      * @return bool Success status
      */
-    public function countNewReader($newsId, int $viewed)
+    public function countingNewReader($newsId, int $viewed)
     {
         $query = $this->mysql->prepare('UPDATE `' . $this->options['extras']['prefix'] . 'items` SET `visited` = :visited WHERE `id` = :id');
         $query->bindValue(':visited', $viewed + 1);
@@ -461,23 +467,4 @@ class MySimplePie_Cache_MySQL extends SimplePie_Cache_DB
         return false;
     }
 
-    /**
-     * Get read count
-     *
-     * @param $newsId
-     * @return int Count of readers
-     */
-    public function getReaderCount(string $newsId)
-    {
-        $sql = 'SELECT `visited` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `id` = :id LIMIT 1';
-
-        $query = $this->mysql->prepare($sql);
-        $query->bindValue(':id', $newsId);
-
-        if ($query->execute() && ($row = $query->fetch()))
-        {
-            return (int) $row[0];
-        }
-        return 0;
-    }
 }

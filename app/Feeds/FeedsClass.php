@@ -11,7 +11,8 @@ namespace App\Feeds;
 use Illuminate\Support\Arr;
 use SimplePie;
 
-require_once(dirname(__FILE__) . "/MySimplePie_Cache.php");
+require_once(dirname(__FILE__) . "/MySimplePie/MySimplePie_Cache.php");
+require_once(dirname(__FILE__) . "/MySimplePie/MySimplePie_Item.php");
 
 class FeedsClass
 {
@@ -126,5 +127,6 @@ class FeedsClass
         if (is_array($curlOptions)) {
             $this->simplePie->set_curl_options($curlOptions);
         }
+        $this->simplePie->set_item_class('MySimplePie_Item');
     }
 }

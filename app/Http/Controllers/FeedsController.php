@@ -29,18 +29,8 @@ class FeedsController extends Controller
         $itemPerPage = 5;
         $itemQuantity = $this->simplePie->get_item_quantity();
         $items = $this->simplePie->get_items($page, $itemPerPage);
-        $newsData = array();
-        foreach ($items as $item) {
-            $hashID = $item->get_id(true);
-            $newsData[$hashID]['id'] = $hashID;
-            $newsData[$hashID]['title'] = $item->get_title();
-            $newsData[$hashID]['descr'] = $item->get_description();
-            $newsData[$hashID]['date'] = $item->get_date('j F Y | g:i a');
-            $mySqlCache = new \MySimplePie_Cache_MySQL($this->simplePie->cache_location, $hashID, 'spc');
-            $newsData[$hashID]['visited'] = $mySqlCache->getReaderCount($item->get_id());
-        }
         $data = [
-            'items' => $newsData,
+            'items' => $items,
             'page' => $page,
             'feedsCount' => $itemQuantity,
         ];
@@ -50,19 +40,19 @@ class FeedsController extends Controller
     /**
      * Get the news
      *
-     * @param string $feedId
+     * @param string $newsID
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function showNews(string $feedId)
+    public function showNews(string $newsID)
     {
         $items = $this->simplePie->get_items();
         foreach ($items as $item) {
-            if ($item->get_id(true) == $feedId) {
+            if ($item->get_id(true) == $newsID) {
                 $id = $item->get_id();
-                $mySqlCache = new \MySimplePie_Cache_MySQL($this->simplePie->cache_location, $feedId, 'spc');
-                $visited = $mySqlCache->getReaderCount($id);
+                $visited = $item->get_readers_count();
+                $mySqlCache = new \MySimplePie_Cache_MySQL($this->simplePie->cache_location, $newsID, 'spc');
+                $mySqlCache->countingNewReader($id, $visited);
                 $visited++;
-                $mySqlCache->countNewReader($id, $visited);
                 return view('news', ['item' => $item, 'visited' => $visited]);
             }
         }
